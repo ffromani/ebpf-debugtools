@@ -1,0 +1,30 @@
+kind: DaemonSet
+apiVersion: apps/v1
+metadata:
+  name: ebpf-debugtools
+spec:
+  selector:
+    matchLabels:
+      app: ebpf-debug-ds
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: ebpf-debug-ds
+        app: ebpf-debug-ds
+        kubernetes.io/os: "linux"
+    spec:
+      containers:
+      - name: ebpf-debug-cnt
+        image: "${CONTAINER_IMAGE}"
+        imagePullPolicy: "IfNotPresent"
+        securityContext:
+          runAsUser: 0
+          privileged: true
+        resources:
+          requests:
+            cpu: 2
+            memory: 4Gi
+      nodeSelector:
+        kubernetes.io/os: "linux"
